@@ -1,0 +1,123 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.documentRevisions-V100
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# VSCode
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata/
+*.launch
+.buildpath
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+*.nb-gradle
+*.nb-project
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Java
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+# Ruby
+.bundle/
+Gemfile.lock
+vendor/
+
+# PHP
+vendor/
+
+# Rust
+target/
+Cargo.lock
+
+*.log
+*.tmp
+*.swp
+.lock
+.cache
+.npm/
+.yarn/
+
+# JetBrains IDEs
+.idea/
+*.iml
+.idea/
+
+# Other
+*.sublime-workspace
+*.sublime-project
+.env
+.env.local
+.env.*.local
+*.exe
+*.dll
+*.so
+*.dylib
+.history/
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+Thumbs.db

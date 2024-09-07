@@ -41,6 +41,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "accounts",
+    "appointments",
+    "consultations",
+    "medical_records",
+    "payments",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -83,10 +88,16 @@ WSGI_APPLICATION = "Telehealth.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'telehealth_db',     
+        'USER': 'telehealth',      
+        'PASSWORD': 'S02970055p',   
+        'HOST': 'localhost',            
+        'PORT': '5432',                 
     }
 }
 

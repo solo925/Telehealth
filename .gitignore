@@ -1,36 +1,6 @@
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-.Spotlight-V100
-.Trashes
-.VolumeIcon.icns
-.documentRevisions-V100
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Icon?
-Desktop.ini
-
 # Linux
 *~
 .directory
-
-# VSCode
-.vscode/
-
-# IntelliJ IDEA
-.idea/
-*.iml
-
-# Eclipse
-.project
-.classpath
-.settings/
-.metadata/
-*.launch
-.buildpath
 
 # Python
 __pycache__/
@@ -40,11 +10,6 @@ __pycache__/
 .Python
 env/
 venv/
-
-# JetBrains IDEs
-.idea/
-*.iml
-.idea/
 
 # Other
 *.sublime-workspace

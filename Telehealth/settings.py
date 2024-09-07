@@ -41,6 +41,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "base",
     "accounts",
     "appointments",
     "consultations",
@@ -93,9 +94,9 @@ WSGI_APPLICATION = "Telehealth.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'telehealth_db',     
-        'USER': 'telehealth',      
-        'PASSWORD': 'S02970055p',   
+        'NAME': 'tldb',
+        'USER': 'admin',      
+        'PASSWORD': 'admin',   
         'HOST': 'localhost',            
         'PORT': '5432',                 
     }

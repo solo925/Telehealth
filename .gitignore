@@ -32,25 +32,6 @@ Desktop.ini
 *.launch
 .buildpath
 
-# NetBeans
-nbproject/private/
-build/
-nbbuild/
-dist/
-*.nb-gradle
-*.nb-project
-# Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Java
-target/
-*.jar
-*.war
-*.ear
-*.class
-
 # Python
 __pycache__/
 *.pyc
@@ -59,25 +40,6 @@ __pycache__/
 .Python
 env/
 venv/
-# Ruby
-.bundle/
-Gemfile.lock
-vendor/
-
-# PHP
-vendor/
-
-# Rust
-target/
-Cargo.lock
-
-*.log
-*.tmp
-*.swp
-.lock
-.cache
-.npm/
-.yarn/
 
 # JetBrains IDEs
 .idea/
@@ -110,6 +72,8 @@ __pycache__/
 .Python
 env/
 venv/
+teleh
+teleh/
 
 # Logs
 *.log

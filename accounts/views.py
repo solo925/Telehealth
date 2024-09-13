@@ -23,9 +23,9 @@ def register(request):
             # Log the user in and redirect to the appropriate dashboard
             login(request, user)
             if role == 'doctor':
-                return redirect('doctor_dashboard')  # Replace with your doctor dashboard URL
+                return redirect('doctor_dashboard') 
             elif role == 'patient':
-                return redirect('patient_dashboard')  # Replace with your patient dashboard URL
+                return redirect('patient_dashboard')  
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})

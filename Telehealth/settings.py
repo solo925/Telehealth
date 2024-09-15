@@ -173,3 +173,9 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ASGI_APPLICATION = "Telehealth.routing.application"
+
+CHANNEL_LAYERS={
+    'default':{
+        'BACKEND':"channels.layers.InMemoryChannelLayer"
+    }
+}

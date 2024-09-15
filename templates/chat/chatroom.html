@@ -1,1 +1,19 @@
-<h1>This is the chatroom page</h1>
+{% extends 'base/base.html' %} {% block content %}
+
+<div id="user-hello"></div>
+{{room_name|json_script:'room-name'}}
+
+<script>
+  const roomName = JSON.parse(document.getElementById("room-name").textContent);
+
+  const chatSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+  );
+
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    console.log(data);
+    document.queryselector("#user-hello").innerHTML = data.tester;
+  };
+</script>
+{% endblock content %}

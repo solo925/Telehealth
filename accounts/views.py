@@ -31,21 +31,8 @@ def register(request):
     return render(request, 'accounts/register.html', {'form': form})
 
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegisterForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password1')
-#             user = authenticate(username=username, password=password)
-#             auth_login(request, user)
-#             return redirect('home')  # Replace with your home page URL
-#     else:
-#         form = UserRegisterForm()
-#     return render(request, 'accounts/register.html', {'form': form})
 
-def login(request):
+def Login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -54,20 +41,31 @@ def login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                return redirect('home')  # Replace with your home page URL
+
+                # octor or patient and redirect 
+                
+                if hasattr(user, 'doctor_profile'):
+                    return redirect('doctor_dashboard')  
+                elif hasattr(user, 'patient_profile'):
+                    return redirect('patient_dashboard')  
+                else:
+                    return redirect('home')  
     else:
         form = LoginForm()
+    
     return render(request, 'accounts/login.html', {'form': form})
 
 @login_required
 def logout(request):
     auth_logout(request)
-    return redirect('login')  # Replace with your login page URL
+    return redirect('login') 
 
 
+@login_required
 def doctor_dashboard(request):
-    return render(request, 'doctor_dashboard.html')
+    return render(request, 'accounts/doctor_dashboard.html')
 
+@login_required
 def patient_dashboard(request):
-    return render(request, 'patient_dashboard.html')
+    return render(request, 'accounts/patient_dashboard.html')
 

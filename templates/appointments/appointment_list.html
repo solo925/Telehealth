@@ -1,0 +1,16 @@
+<!-- templates/appointments/appointment_list.html -->
+{% extends "base/base.html" %} {% block content %}
+<h2>My Appointments</h2>
+<ul>
+  {% for appointment in appointments %}
+  <li>
+    <a href="{% url 'appointment_detail' appointment.pk %}">
+      {{ appointment.doctor.user.username }} - {{ appointment.appointment_date
+      }} - {{ appointment.get_status_display }}
+    </a>
+  </li>
+  {% empty %}
+  <p>No appointments found.</p>
+  {% endfor %}
+</ul>
+{% endblock %}

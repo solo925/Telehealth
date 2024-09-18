@@ -24,7 +24,7 @@ urlpatterns = [
     path("",include('base.urls')),
     path('accounts/',include('accounts.urls')),
     path('chat/',include('chat.urls')),
-    # path('appointments/',include('appointments.urls')),
+    path('appointments/',include('appointments.urls')),
     # path('consultations/',include('consultations.urls')),
     # path('medical_records/',include('medical_records.urls')),
     # path('payments/',include('medical_records.urls')),

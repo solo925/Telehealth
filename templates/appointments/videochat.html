@@ -1,0 +1,29 @@
+<h1>Join Video Call for Appointment</h1>
+
+<!-- Include Twilio Video and Chat SDKs -->
+<script src="https://sdk.twilio.com/js/video/releases/2.10.1/twilio-video.min.js"></script>
+<script src="https://sdk.twilio.com/js/chat/releases/3.0.0/twilio-chat.min.js"></script>
+
+<div id="video-room"></div>
+
+<script>
+  const accessToken = "{{ access_token }}";
+  const roomName = "{{ room_name }}";
+
+  // Connect to Twilio Video
+  Twilio.Video.connect(accessToken, { name: roomName }).then((room) => {
+    console.log("Connected to room", room);
+    room.participants.forEach((participant) => {
+      console.log("Participant:", participant);
+    });
+  });
+
+  // Connect to Twilio Chat
+  Twilio.Chat.Client.create(accessToken).then((chatClient) => {
+    chatClient.getChannelByUniqueName(roomName).then((channel) => {
+      channel.join().then(() => {
+        console.log("Joined chat channel");
+      });
+    });
+  });
+</script>

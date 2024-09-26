@@ -110,19 +110,7 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'tldb',
-#         'USER': 'admin',
-#         'PASSWORD': 'admin',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 
-
-# print(env('DB_NAME'))
 
 
 
@@ -184,3 +172,20 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+
+# Reading .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Using the environment variables
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
+TWILIO_API_KEY = env('TWILIO_API_KEY_SID')
+TWILIO_API_SECRET = env('TWILIO_API_KEY_SECRET')
+
+
+

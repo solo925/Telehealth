@@ -12,3 +12,6 @@ after that you have to change the websocket configuration to use the 8001 port a
     );
 
     it finnaly worked channels and daphne chat feature
+
+video one device trial.one person working maybe i dont know moetesting needed
+![alt text](image.png)

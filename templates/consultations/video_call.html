@@ -1,41 +1,99 @@
-{% extends 'base/base.html' %}{% block content %}
+{% extends 'base/base.html' %} {% block content %}
+<h1>Video Call</h1>
+<div id="video-room"></div>
 
-<head>
-  <title>Video Call</title>
-  <script src="https://media.twiliocdn.com/sdk/js/video/v2/twilio-video.min.js"></script>
-</head>
-<body>
-  <h1>Video Call</h1>
-  <div id="video-room"></div>
+<!-- Add Start and End Call buttons -->
+<button id="start-call-btn">Start Call</button>
+<button id="end-call-btn" style="display: none">End Call</button>
 
-  <script type="text/javascript">
-    Twilio.Video.createLocalTracks().then(function (localTracks) {
-      const videoRoom = document.getElementById("video-room");
-      localTracks.forEach((track) => {
-        videoRoom.appendChild(track.attach());
+<!-- Include Twilio's Video SDK -->
+<script src="https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/twilio-video.min.js"></script>
+
+<script type="text/javascript">
+  let activeRoom; // Global reference for the current room
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const startCallButton = document.getElementById("start-call-btn");
+    const endCallButton = document.getElementById("end-call-btn");
+    const videoRoomDiv = document.getElementById("video-room");
+
+    // Start Call Button Click
+    startCallButton.onclick = function () {
+      // Create local video and audio tracks
+      Twilio.Video.createLocalTracks().then(function (localTracks) {
+        localTracks.forEach((track) => {
+          videoRoomDiv.appendChild(track.attach());
+        });
+
+        // Connect to the Twilio Video room with the token
+        Twilio.Video.connect("{{ token }}", { name: "ConsultationRoom" }).then(
+          function (room) {
+            activeRoom = room; // Set activeRoom reference
+            console.log("Successfully connected to the room.");
+
+            // Show the End Call button and hide the Start Call button
+            startCallButton.style.display = "none";
+            endCallButton.style.display = "inline";
+
+            // Attach participant tracks
+            room.participants.forEach((participant) => {
+              participant.tracks.forEach((publication) => {
+                if (publication.isSubscribed) {
+                  videoRoomDiv.appendChild(publication.track.attach());
+                }
+              });
+            });
+
+            // Handle new participants joining the room
+            room.on("participantConnected", function (participant) {
+              participant.tracks.forEach((publication) => {
+                if (publication.isSubscribed) {
+                  videoRoomDiv.appendChild(publication.track.attach());
+                }
+              });
+            });
+
+            // Handle participants disconnecting
+            room.on("participantDisconnected", function (participant) {
+              participant.tracks.forEach((publication) => {
+                if (publication.track) {
+                  publication.track
+                    .detach()
+                    .forEach((element) => element.remove());
+                }
+              });
+            });
+
+            // Handle when the room is disconnected (for End Call)
+            room.on("disconnected", function (room) {
+              room.localParticipant.tracks.forEach((publication) => {
+                publication.track
+                  .detach()
+                  .forEach((element) => element.remove());
+              });
+              console.log("Disconnected from the room.");
+              videoRoomDiv.innerHTML = ""; // Clear the video area
+            });
+          },
+          function (error) {
+            console.error("Failed to connect to the room: " + error.message);
+          }
+        );
       });
+    };
 
-      Twilio.Video.connect("{{ token }}", { name: "ConsultationRoom" }).then(
-        function (room) {
-          room.participants.forEach((participant) => {
-            participant.tracks.forEach((publication) => {
-              if (publication.isSubscribed) {
-                videoRoom.appendChild(publication.track.attach());
-              }
-            });
-          });
+    // End Call Button Click
+    endCallButton.onclick = function () {
+      if (activeRoom) {
+        activeRoom.disconnect(); // Disconnect from the room
+        activeRoom = null; // Clear the active room reference
+      }
 
-          room.on("participantConnected", function (participant) {
-            participant.tracks.forEach((publication) => {
-              if (publication.isSubscribed) {
-                videoRoom.appendChild(publication.track.attach());
-              }
-            });
-          });
-        }
-      );
-    });
-  </script>
+      // Hide the End Call button and show the Start Call button
+      endCallButton.style.display = "none";
+      startCallButton.style.display = "inline";
+    };
+  });
+</script>
 
-  {% endblock content %}
-</body>
+{% endblock content %}

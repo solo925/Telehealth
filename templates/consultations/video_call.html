@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}{% block content %}
+<script src="//media.twiliocdn.com/sdk/js/video/releases/2.0.0/twilio-video.min.js"></script>
+<script>
+  Twilio.Video.connect("{{ token }}", { name: "{{ room_name }}" }).then(
+    (room) => {
+      console.log(`Connected to room: ${room.name}`);
+    }
+  );
+</script>
+{% endblock content %}

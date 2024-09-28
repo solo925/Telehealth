@@ -41,7 +41,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "chat",
     "base",
     "accounts",
     "appointments",

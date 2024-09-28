@@ -1,3 +1,10 @@
+"""
+Handles the creation of user profiles for doctors and patients when a new user is created.
+
+When a new user is created, this signal receiver checks if the user belongs to the 'Doctors' or 'Patients' group. If so, it creates a corresponding DoctorProfile or PatientProfile object for the user.
+
+If there is an error creating the profile, it logs the exception.
+"""
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User

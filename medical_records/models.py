@@ -1,3 +1,16 @@
+"""
+Defines the `MedicalRecord` model, which represents a medical record for a patient.
+
+The `MedicalRecord` model has the following fields:
+- `doctor`: A foreign key to the `User` model, representing the doctor who created the record.
+- `patient`: A foreign key to the `User` model, representing the patient the record belongs to.
+- `title`: A character field for the title of the medical record.
+- `description`: A text field for the description of the medical record.
+- `document`: An optional file field for uploading documents related to the medical record.
+- `created_at`: A datetime field that automatically records the time the record was created.
+
+The `__str__` method returns a string representation of the medical record, showing the title and the patient's username.
+"""
 from django.db import models
 from django.contrib.auth.models import User
 

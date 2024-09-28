@@ -1,3 +1,14 @@
+"""
+Handles user registration, login, and logout functionality for the application.
+
+The `register` function allows users to create a new account, specifying their role as either a doctor or a patient. Upon successful registration, the user is logged in and redirected to the appropriate dashboard.
+
+The `Login` function handles user authentication. It checks the provided username and password, and if valid, logs the user in and redirects them to the appropriate dashboard based on their user profile.
+
+The `logout` function logs the current user out of the application and redirects them to the login page.
+
+The `doctor_dashboard` and `patient_dashboard` functions render the respective dashboard pages for logged-in users.
+"""
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.decorators import login_required

@@ -1,6 +1,9 @@
 {% extends 'base/base.html' %} {% block content %}
 <a href="{% url 'login' %}">login</a>
 <a href="{% url 'register' %}">Register</a>
+<li><a href="{% url 'upload_medical_record' %}">Upload Medical Record</a></li>
+<li><a href="{% url 'view_medical_records' %}">View Medical Records</a></li>
+
 login register
 <h1>Say itw working</h1>
 {% endblock %}

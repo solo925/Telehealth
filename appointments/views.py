@@ -18,8 +18,13 @@ def book_appointment(request):
             appointment = form.save(commit=False)
 
             # Create Twilio Video Room
-            room = client.video.rooms.create(unique_name=f"Appointment_{appointment.id}")
-            appointment.room_name = room.unique_name
+            rooms = client.video.rooms.list(unique_name=f"Appointment_{appointment.id}")
+
+            if not rooms:
+               room = client.video.rooms.create(unique_name=f"Appointment_{appointment.id}")
+            else:
+              room = rooms[0]  # Use the existing room
+
 
             # Create Twilio Chat Service
             chat_service = client.chat.services.create(friendly_name=f"AppointmentChat_{appointment.id}")

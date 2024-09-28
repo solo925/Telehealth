@@ -26,7 +26,7 @@ urlpatterns = [
     path('chat/',include('chat.urls')),
     path('appointments/',include('appointments.urls')),
     # path('consultations/',include('consultations.urls')),
-    # path('medical_records/',include('medical_records.urls')),
+    path('medical_records/',include('medical_records.urls')),
     # path('payments/',include('medical_records.urls')),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -30,3 +30,6 @@ def video_consultation(request, room_name):
         'token': token.to_jwt()
     }
     return render(request, 'consultations/video_call.html', context)
+
+def chat_room(request, room_name):
+    return render(request, 'consultations/chat.html', {'room_name': room_name})

@@ -1,22 +1,46 @@
-{% comment %} This code sets up a WebSocket connection to a chat room and
-handles sending and receiving messages. The `chatSocket` object is created to
-connect to the WebSocket endpoint at the specified URL, which includes the room
-name. When a message is received, the code updates the chat log with the
-message. The code also sets up event handlers for the chat input field and
-submit button, allowing the user to send messages by pressing Enter or clicking
-the submit button. The sent messages are then transmitted over the WebSocket
-connection. {% endcomment %} {% extends 'base/base.html' %}{% block content %}
+{% extends 'base/base.html' %} {% block content %}
+
+<h1>Chat Room: {{ room_name }}</h1>
+<div id="chat-log"></div>
+<input id="chat-message-input" type="text" size="100" />
+<button id="chat-message-submit">Send</button>
+
 <script>
-  const chatSocket = new WebSocket(
-    "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
-  );
+  let chatSocket; // Declare chatSocket globally
 
-  chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    document.querySelector("#chat-log").value += data.message + "\n";
-  };
+  // Function to initialize WebSocket connection
+  function connectWebSocket() {
+    const roomName = "{{ room_name }}";
 
+    // Initialize WebSocket
+    chatSocket = new WebSocket(
+      "ws://" + window.location.hostname + ":8001/ws/chat/" + roomName + "/"
+    );
+
+    // Handle incoming messages
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      const chatLog = document.querySelector("#chat-log");
+      chatLog.innerHTML += "<br>" + data.message;
+      chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to bottom
+    };
+
+    // Handle WebSocket closure and attempt to reconnect
+    chatSocket.onclose = function (e) {
+      console.error(
+        "Chat socket closed unexpectedly. Attempting to reconnect..."
+      );
+      setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
+    };
+  }
+
+  // Initialize WebSocket on page load
+  connectWebSocket();
+
+  // Focus on the message input on page load
   document.querySelector("#chat-message-input").focus();
+
+  // Send message when Enter key is pressed
   document.querySelector("#chat-message-input").onkeyup = function (e) {
     if (e.keyCode === 13) {
       // Enter key
@@ -24,15 +48,24 @@ connection. {% endcomment %} {% extends 'base/base.html' %}{% block content %}
     }
   };
 
+  // Send message when "Send" button is clicked
   document.querySelector("#chat-message-submit").onclick = function (e) {
     const messageInputDom = document.querySelector("#chat-message-input");
     const message = messageInputDom.value;
-    chatSocket.send(
-      JSON.stringify({
-        message: message,
-      })
-    );
+
+    if (chatSocket.readyState === WebSocket.OPEN) {
+      chatSocket.send(
+        JSON.stringify({
+          message: message,
+        })
+      );
+    } else {
+      console.error("WebSocket is not open: ", chatSocket.readyState);
+    }
+
+    // Clear the message input after sending
     messageInputDom.value = "";
   };
 </script>
+
 {% endblock content %}

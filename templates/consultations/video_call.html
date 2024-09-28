@@ -1,10 +1,41 @@
 {% extends 'base/base.html' %}{% block content %}
-<script src="//media.twiliocdn.com/sdk/js/video/releases/2.0.0/twilio-video.min.js"></script>
-<script>
-  Twilio.Video.connect("{{ token }}", { name: "{{ room_name }}" }).then(
-    (room) => {
-      console.log(`Connected to room: ${room.name}`);
-    }
-  );
-</script>
-{% endblock content %}
+
+<head>
+  <title>Video Call</title>
+  <script src="https://media.twiliocdn.com/sdk/js/video/v2/twilio-video.min.js"></script>
+</head>
+<body>
+  <h1>Video Call</h1>
+  <div id="video-room"></div>
+
+  <script type="text/javascript">
+    Twilio.Video.createLocalTracks().then(function (localTracks) {
+      const videoRoom = document.getElementById("video-room");
+      localTracks.forEach((track) => {
+        videoRoom.appendChild(track.attach());
+      });
+
+      Twilio.Video.connect("{{ token }}", { name: "ConsultationRoom" }).then(
+        function (room) {
+          room.participants.forEach((participant) => {
+            participant.tracks.forEach((publication) => {
+              if (publication.isSubscribed) {
+                videoRoom.appendChild(publication.track.attach());
+              }
+            });
+          });
+
+          room.on("participantConnected", function (participant) {
+            participant.tracks.forEach((publication) => {
+              if (publication.isSubscribed) {
+                videoRoom.appendChild(publication.track.attach());
+              }
+            });
+          });
+        }
+      );
+    });
+  </script>
+
+  {% endblock content %}
+</body>

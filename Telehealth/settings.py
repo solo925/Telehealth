@@ -33,8 +33,16 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 SECRET_KEY = "django-insecure-1!%4!r+@=0%jsf7zwrs*idt130gc(jxj=&vd@u&mpd*z73!%py"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+# Specify the path to your .env file explicitly
+from dotenv import load_dotenv
+env_path = os.path.join(BASE_DIR, '.env')
+
+# Load the .env file
+load_dotenv(dotenv_path=env_path)
+
+# Now, use environment variables
+DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = []
 
 
@@ -159,19 +167,14 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ASGI_APPLICATION = "Telehealth.asgi.application"
+ASGI_APPLICATION = 'Telehealth.asgi.application'
 
-# settings.py
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # For development, use Redis for production
     },
 }
-
 import environ
 
 # Initialize environment variables

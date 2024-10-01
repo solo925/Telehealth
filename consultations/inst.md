@@ -13,6 +13,6 @@ after that you have to change the websocket configuration to use the 8001 port a
 
     it finnaly worked channels and daphne chat feature
 
-video chat working tested on the same devise
+video chat working tested on the same device
 
 ![alt text](image.png)

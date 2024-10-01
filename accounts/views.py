@@ -18,6 +18,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm,LoginForm
 from .models import DoctorProfile, PatientProfile
 
+
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -34,9 +36,9 @@ def register(request):
             # Log the user in and redirect to the appropriate dashboard
             login(request, user)
             if role == 'doctor':
-                return redirect('doctor_dashboard') 
+                return redirect('accounts:doctor_dashboard') 
             elif role == 'patient':
-                return redirect('patient_dashboard')  
+                return redirect('accounts:patient_dashboard')  
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -44,6 +46,7 @@ def register(request):
 
 
 def Login(request):
+    # print("request: ", request)
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -52,15 +55,16 @@ def Login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
+                
 
                 # octor or patient and redirect 
                 
                 if hasattr(user, 'doctor_profile'):
-                    return redirect('doctor_dashboard')  
+                    return redirect('accounts:doctor_dashboard')  
                 elif hasattr(user, 'patient_profile'):
-                    return redirect('patient_dashboard')  
+                    return redirect('accounts:patient_dashboard')  
                 else:
-                    return redirect('home')  
+                    return redirect('base:home')  
     else:
         form = LoginForm()
     
@@ -69,7 +73,7 @@ def Login(request):
 @login_required
 def logout(request):
     auth_logout(request)
-    return redirect('login') 
+    return redirect('accounts:login') 
 
 
 @login_required
@@ -79,4 +83,6 @@ def doctor_dashboard(request):
 @login_required
 def patient_dashboard(request):
     return render(request, 'accounts/patient_dashboard.html')
+
+
 

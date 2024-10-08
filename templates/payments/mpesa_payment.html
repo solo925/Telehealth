@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %} {% block content %}
+<body class="bg-gray-100">
+  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Pay with M-Pesa</h2>
+    <form
+      id="mpesaPaymentForm"
+      method="post"
+      action="{% url 'payment:lipa_na_mpesa' %}"
+    >
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="amount" class="block text-sm font-medium text-gray-700"
+          >Amount</label
+        >
+        <input
+          type="number"
+          name="amount"
+          id="amount"
+          required
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          placeholder="Enter amount"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="phone_number"
+          class="block text-sm font-medium text-gray-700"
+          >Phone Number</label
+        >
+        <input
+          type="text"
+          name="phone_number"
+          id="phone_number"
+          required
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          placeholder="Enter your phone number"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded"
+      >
+        Pay Now
+      </button>
+    </form>
+  </div>
+
+  {% endblock content %}
+</body>

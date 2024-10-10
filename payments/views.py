@@ -20,42 +20,49 @@ paypalrestsdk.configure({
 })
 
 def create_paypal_payment(request):
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"
-        },
-        "redirect_urls": {
-            "return_url": "http://localhost:8000/payment/execute/",
-            "cancel_url": "http://localhost:8000/payment/cancel/"
-        },
-        "transactions": [{
-            "item_list": {
-                "items": [{
-                    "name": "Telehealth Consultation",
-                    "sku": "item",
-                    "price": "10.00",  # Set your price
-                    "currency": "USD",
-                    "quantity": 1
-                }]
-            },
-            "amount": {
-                "total": "10.00",  # Set your total amount
-                "currency": "USD"
-            },
-            "description": "Payment for Telehealth Services"
-        }]
-    })
+    if request.method == "POST":
+        amount = request.POST.get('amount')
+        if not amount or float(amount) <= 0:
+            return JsonResponse({"error": "Invalid amount"})
 
-    if payment.create():
-        print("Payment created successfully")
-        for link in payment.links:
-            if link.rel == "approval_url":
-                approval_url = str(link.href)
-                return redirect(approval_url)
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"
+            },
+            "redirect_urls": {
+                "return_url": "http://localhost:8000/payment/execute/",
+                "cancel_url": "http://localhost:8000/payment/cancel/"
+            },
+            "transactions": [{
+                "item_list": {
+                    "items": [{
+                        "name": "Telehealth Consultation",
+                        "sku": "item",
+                        "price": amount,  # Use the input amount here
+                        "currency": "USD",
+                        "quantity": 1
+                    }]
+                },
+                "amount": {
+                    "total": amount,  # Use the input amount here
+                    "currency": "USD"
+                },
+                "description": "Payment for Telehealth Services"
+            }]
+        })
+
+        if payment.create():
+            print("Payment created successfully")
+            for link in payment.links:
+                if link.rel == "approval_url":
+                    approval_url = str(link.href)
+                    return redirect(approval_url)
+        else:
+            print(payment.error)
+            return JsonResponse({"error": "Payment creation failed."})
     else:
-        print(payment.error)
-        return JsonResponse({"error": "Payment creation failed."})
+        return render(request, 'payments/paypal.html')
 
 def execute_payment(request):
     payment_id = request.GET.get('paymentId')

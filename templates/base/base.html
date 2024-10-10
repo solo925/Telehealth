@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    {% include 'base/navbar.html' %}
   </head>
   <body>
-    {% block content %}{% endblock content %}
+    {% include 'base/navbar.html' %} {% block content %}
+    <h1>base inherited</h1>
+    {% endblock content %}
   </body>
 </html>

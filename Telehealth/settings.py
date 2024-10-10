@@ -44,8 +44,6 @@ load_dotenv(dotenv_path=env_path)
 # Now, use environment variables
 DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -93,19 +91,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Telehealth.wsgi.application"
-
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-
-
 import environ
-
 env = environ.Env()
 # reading .env file
 environ.Env.read_env()
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -116,12 +108,6 @@ DATABASES = {
         'PORT': env('DB_PORT', default='5432'),
     }
 }
-
-
-
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -139,8 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -151,8 +135,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -175,10 +157,6 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',  # For development, use Redis for production
     },
 }
-import environ
-
-# Initialize environment variables
-env = environ.Env()
 
 # Reading .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -189,8 +167,10 @@ TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
 TWILIO_API_KEY = env('TWILIO_API_KEY_SID')
 TWILIO_API_SECRET = env('TWILIO_API_KEY_SECRET')
 
+# Mpesa
 MPESA_CONSUMER_KEY = env('MPESA_CONSUMER_KEY')
 MPESA_CONSUMER_SECRET = env('MPESA_CONSUMER_SECRET')
-
-
+MPESA_SHORTCODE = env('MPESA_SHORTCODE')
+LIPA_NA_MPESA_ONLINE_SHORTCODE = env('LIPA_NA_MPESA_ONLINE_SHORTCODE')
+LIPA_NA_MPESA_ONLINE_PASSKEY = env('LIPA_NA_MPESA_ONLINE_PASSKEY')
 

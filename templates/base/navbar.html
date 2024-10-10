@@ -1,15 +1,23 @@
-<div>
-  <a href="{% url 'accounts:login' %}">login</a>
-  <a href="{% url 'accounts:register' %}">Register</a>
+{% load static %}
+<header>
+  <div>
+    <div class="link-login-register">
+      <a href="{% url 'accounts:login' %}">login</a>
+      <a href="{% url 'accounts:register' %}">Register</a>
+    </div>
+    <div class="link-medicalRecords">
+      <li>
+        <a href="{% url 'medical_records:upload_medical_record' %}"
+          >Upload Medical Record</a
+        >
+      </li>
+      <li>
+        <a href="{% url 'medical_records:view_medical_records' %}"
+          >View Medical Records</a
+        >
+      </li>
+    </div>
+  </div>
+</header>
 
-  <li>
-    <a href="{% url 'medical_records:upload_medical_record' %}"
-      >Upload Medical Record</a
-    >
-  </li>
-  <li>
-    <a href="{% url 'medical_records:view_medical_records' %}"
-      >View Medical Records</a
-    >
-  </li>
-</div>
+<h1>The Header</h1>

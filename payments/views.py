@@ -9,6 +9,7 @@ import base64
 from . forms import PaymentForm
 from .mpesa_utils import standardize_phone_number
 from .mpesa_utils import is_valid_phone_number
+from payments.models import Invoice
 
 
 
@@ -154,13 +155,50 @@ def lipa_na_mpesa_online(amount, phone_number):
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-@csrf_exempt
-def mpesa_callback(request):
-    data = request.body
-    # Process the callback and update the payment status in the database
-    return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
 
 # def mpesa_payment_view(request):
 #     return render(request, 'payments/mpesa_payment.html')
 
-# PAYPAL VIEWS
+# INVOICES
+def create_invoice(user, payment_method, transaction_id, amount, description):
+    # Create the invoice in the database
+    invoice = Invoice.objects.create(
+        user=user,
+        payment_method=payment_method,
+        transaction_id=transaction_id,
+        amount=amount,
+        description=description
+    )
+    return invoice
+
+
+# M-Pesa callback - payments/views.py
+
+# payments/views.py
+
+import json
+from decimal import Decimal
+
+@csrf_exempt
+def mpesa_callback(request):
+    data = json.loads(request.body.decode('utf-8'))  # Decode the JSON body from M-Pesa
+    
+    # Extract relevant fields from the M-Pesa response
+    transaction_id = data.get("Body", {}).get("stkCallback", {}).get("CheckoutRequestID")
+    amount = data.get("Body", {}).get("stkCallback", {}).get("CallbackMetadata", {}).get("Item", [])[0].get("Value", 0)
+    
+    # Ensure amount is converted to a Decimal
+    amount = Decimal(amount)
+    
+    user = request.user  # Assuming you know the user based on the request
+    
+    # Create an invoice with the correct amount
+    create_invoice(
+        user=user,
+        payment_method="mpesa",
+        transaction_id=transaction_id,
+        amount=amount,
+        description="Payment for Telehealth Services"
+    )
+    
+    return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})

@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %} {% block content %}
+
+<h2>Invoice #{{ invoice.id }}</h2>
+<p>Transaction ID: {{ invoice.transaction_id }}</p>
+<p>Payment Method: {{ invoice.payment_method }}</p>
+<p>Amount: ${{ invoice.amount }}</p>
+<p>Date: {{ invoice.date }}</p>
+<p>Description: {{ invoice.description }}</p>
+
+<a href="{% url 'invoice_pdf' invoice.id %}">Download PDF</a>
+
+{% endblock content %}

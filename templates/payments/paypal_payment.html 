@@ -1,0 +1,8 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <h1>Pay for Telehealth Consultation</h1>
+    <form action="{% url 'paypal-create' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Pay with PayPal</button>
+    </form>
+{% endblock content %}

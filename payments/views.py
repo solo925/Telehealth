@@ -1,6 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.shortcuts import render, redirect
+import paypalrestsdk
 import requests
 from django.http import JsonResponse
 from django.conf import settings
@@ -12,6 +11,70 @@ from .mpesa_utils import standardize_phone_number
 from .mpesa_utils import is_valid_phone_number
 
 
+
+# PAYPAL VIEWS
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,  # 'sandbox' or 'live'
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET
+})
+
+def create_paypal_payment(request):
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:8000/payment/execute/",
+            "cancel_url": "http://localhost:8000/payment/cancel/"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Telehealth Consultation",
+                    "sku": "item",
+                    "price": "10.00",  # Set your price
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": "10.00",  # Set your total amount
+                "currency": "USD"
+            },
+            "description": "Payment for Telehealth Services"
+        }]
+    })
+
+    if payment.create():
+        print("Payment created successfully")
+        for link in payment.links:
+            if link.rel == "approval_url":
+                approval_url = str(link.href)
+                return redirect(approval_url)
+    else:
+        print(payment.error)
+        return JsonResponse({"error": "Payment creation failed."})
+
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    payment = paypalrestsdk.Payment.find(payment_id)
+
+    if payment.execute({"payer_id": payer_id}):
+        print("Payment executed successfully")
+        return JsonResponse({"status": "Payment completed."})
+    else:
+        print(payment.error)
+        return JsonResponse({"error": "Payment execution failed."})
+
+def cancel_payment(request):
+    return JsonResponse({"status": "Payment canceled."})
+
+
+# M-PESA PAYMNET VIEWS
 def payment(request):
     if request.method == 'POST':
         form = PaymentForm(request.POST)
@@ -39,7 +102,7 @@ def payment(request):
 
 
 
-# Get access token
+# Get access token FOR mPEAS
 def get_access_token():
     consumer_key = settings.MPESA_CONSUMER_KEY
     consumer_secret = settings.MPESA_CONSUMER_SECRET
@@ -92,3 +155,5 @@ def mpesa_callback(request):
 
 # def mpesa_payment_view(request):
 #     return render(request, 'payments/mpesa_payment.html')
+
+# PAYPAL VIEWS

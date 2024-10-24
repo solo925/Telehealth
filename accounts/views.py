@@ -68,7 +68,22 @@ def Login(request):
     else:
         form = LoginForm()
     
-    return render(request, 'accounts/login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})\
+        
+
+@login_required
+def user_profile(request):
+    user = request.user
+    profile = None
+
+    if user.groups.filter(name='Doctors').exists():
+        profile = get_object_or_404(DoctorProfile, user=user)
+        print(profile)
+    elif user.groups.filter(name='Patients').exists():
+        profile = get_object_or_404(PatientProfile, user=user)
+    
+    return render(request, 'accounts/profile.html', {'profile': profile})
+
 
 @login_required
 def logout(request):

@@ -1,0 +1,20 @@
+<!-- profile.html -->
+
+<h1>Welcome {{user.username}}</h1>
+
+{% if profile %}
+<p>
+  <strong>Name:</strong> {{ profile.user.first_name }} {{ profile.user.last_name
+  }}
+</p>
+<p><strong>Email:</strong> {{ profile.user.email }}</p>
+
+{% if profile%}
+<p><strong>Specialization:</strong> {{ profile.specialization }}</p>
+<!-- Add more doctor-specific fields -->
+{% else %}
+<p><strong>Age:</strong> {{ profile.age }}</p>
+<!-- Add more patient-specific fields -->
+{% endif %} {% else %}
+<p>No profile information available.</p>
+{% endif %}

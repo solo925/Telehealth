@@ -6,7 +6,7 @@ The `PatientProfile` model represents the profile information for a patient user
 Both the `DoctorProfile` and `PatientProfile` models override the `__str__` method to return the username of the associated user, which can be useful for string representations of these objects.
 """
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractBaseUser,AbstractUser,AnonymousUser
 
 class DoctorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_profile')
@@ -21,4 +21,11 @@ class PatientProfile(models.Model):
    
     def __str__(self):
         return self.user.username
+    
+# class Sudo(AbstractBaseUser):
+#     password = models.CharField(max_length=20)
+#     last_login = models.DateTimeField(auto_now_add=True)
+    
+# class sudo2(AbstractUser):
+#     is_superuser = models.BooleanField()
     

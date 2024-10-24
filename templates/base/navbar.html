@@ -1,11 +1,10 @@
-{% load static %}
 <header>
   <div>
     <div class="link-login-register">
-      <a href="{% url 'accounts:login' %}">login</a>
+      <a href="{% url 'accounts:login' %}">Login</a>
       <a href="{% url 'accounts:register' %}">Register</a>
     </div>
-    <div class="link-medicalRecords">
+    <ul class="link-medicalRecords">
       <li>
         <a href="{% url 'medical_records:upload_medical_record' %}"
           >Upload Medical Record</a
@@ -16,8 +15,6 @@
           >View Medical Records</a
         >
       </li>
-    </div>
+    </ul>
   </div>
 </header>
-
-<h1>The Header</h1>

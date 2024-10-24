@@ -1,8 +1,10 @@
+# urls.py
 from django.urls import path
-from . import views
+from .views import UploadMedicalRecordView, ViewMedicalRecordsView
 
 app_name = "medical_records"
+
 urlpatterns = [
-    path('upload/', views.upload_medical_record, name='upload_medical_record'),
-    path('records/', views.view_medical_records, name='view_medical_records'),
+    path('upload/', UploadMedicalRecordView.as_view(), name='upload_medical_record'),
+    path('records/', ViewMedicalRecordsView.as_view(), name='view_medical_records'),
 ]

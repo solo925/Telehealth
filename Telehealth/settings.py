@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "channels",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -179,5 +180,18 @@ LIPA_NA_MPESA_ONLINE_PASSKEY = env('LIPA_NA_MPESA_ONLINE_PASSKEY')
 PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = env('PAYPAL_CLIENT_SECRET')
 PAYPAL_MODE = 'sandbox'  # Change to 'live' for production
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # This will require authentication by default
+    ),
+}
+
+
 
 

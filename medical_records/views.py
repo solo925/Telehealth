@@ -1,52 +1,53 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
 from .models import MedicalRecord
-from .forms import MedicalRecordForm
+from .serializers import MedicalRecordSerializer
+from rest_framework.permissions import IsAuthenticated
 
-@login_required
-def upload_medical_record(request):
-    """
-    This function handles the uploading of medical records by doctors.
-    It uses Django's form handling and authentication decorators.
+class UploadMedicalRecordView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    Parameters:
-    request (HttpRequest): The incoming request object. Contains data about the request.
+    def post(self, request):
+        """
+        Handles the uploading of medical records by doctors.
+        """
+        serializer = MedicalRecordSerializer(data=request.data)
+        if serializer.is_valid():
+            # Automatically set the logged-in user as the doctor
+            serializer.save(doctor=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    Returns:
-    HttpResponse: The rendered template with the form or a redirect to the 'view_medical_records' page.
-    """
-    if request.method == 'POST':
-        form = MedicalRecordForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Create an unsaved instance of the MedicalRecord model
-            medical_record = form.save(commit=False)
-            # Validate that the user is a doctor and not a patient
-            if not request.user.is_doctor:
-                medical_record.doctor = request.user  # Automatically set the logged-in user as the doctor
-                medical_record.save()
-            return redirect('view_medical_records')
-    else:
-        form = MedicalRecordForm()
+class ViewMedicalRecordsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    return render(request, 'medical_records/upload_record.html', {'form': form})
+    def get(self, request):
+        """
+        Handles viewing medical records by both doctors and patients.
+        Doctors see the records they've created, patients see their own records.
+        """
+        if request.user.groups.filter(name='Doctors').exists():
+            # Doctors can view all records they created
+            records = MedicalRecord.objects.filter(doctor=request.user)
+        else:
+            # Patients can only view their own records
+            records = MedicalRecord.objects.filter(patient=request.user)
 
-@login_required
-def view_medical_records(request):
-    """
-    This function handles viewing medical records by both doctors and patients.
-    It checks the user's group membership to determine which records to display.
+        serializer = MedicalRecordSerializer(records, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    Parameters:
-    request (HttpRequest): The incoming request object. Contains data about the request.
+from rest_framework.parsers import MultiPartParser, FormParser
 
-    Returns:
-    HttpResponse: The rendered template with a list of medical records.
-    """
-    if request.user.groups.filter(name='Doctors').exists():
-        # Doctors can view all records they created
-        records = MedicalRecord.objects.filter(doctor=request.user)
-    else:
-        # Patients can only view their own records
-        records = MedicalRecord.objects.filter(patient=request.user)
+class UploadMedicalRecordView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # Handles file uploads
 
-    return render(request, 'medical_records/record_list.html', {'records': records})
+    def post(self, request):
+        serializer = MedicalRecordSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(doctor=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

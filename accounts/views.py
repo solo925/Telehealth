@@ -1,103 +1,59 @@
-"""
-Handles user registration, login, and logout functionality for the application.
-
-The `register` function allows users to create a new account, specifying their role as either a doctor or a patient. Upon successful registration, the user is logged in and redirected to the appropriate dashboard.
-
-The `Login` function handles user authentication. It checks the provided username and password, and if valid, logs the user in and redirects them to the appropriate dashboard based on their user profile.
-
-The `logout` function logs the current user out of the application and redirects them to the login page.
-
-The `doctor_dashboard` and `patient_dashboard` functions render the respective dashboard pages for logged-in users.
-"""
-from django.shortcuts import render, redirect
-from django.contrib.auth import login as auth_login, authenticate
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
-from .forms import CustomUserCreationForm,LoginForm
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny,IsAuthenticated
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import generics
 from .models import DoctorProfile, PatientProfile
+from accounts.models import User
+from .serializers import DoctorProfileSerializer, PatientProfileSerializer,UserSerializer
+from django.shortcuts import get_object_or_404
+from accounts.decorators import role_required
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            token = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(token),
+                'access': str(token.access_token),
+            }, status=status.HTTP_200_OK)
+        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            role = form.cleaned_data.get('role')
-            
-            # Create profile based on the selected role
-            if role == 'doctor':
-                DoctorProfile.objects.create(user=user)
-            elif role == 'patient':
-                PatientProfile.objects.create(user=user)
+@role_required('Doctor')
+class DoctorProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DoctorProfile.objects.all()
+    serializer_class = DoctorProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-            # Log the user in and redirect to the appropriate dashboard
-            login(request, user)
-            if role == 'doctor':
-                return redirect('accounts:doctor_dashboard') 
-            elif role == 'patient':
-                return redirect('accounts:patient_dashboard')  
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
+    def get_object(self):
+        return get_object_or_404(DoctorProfile, user=self.request.user)
 
+@role_required('patient')
+class PatientProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PatientProfile.objects.all()
+    serializer_class = PatientProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-
-def Login(request):
-    # print("request: ", request)
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                auth_login(request, user)
-                
-
-                # octor or patient and redirect 
-                
-                if hasattr(user, 'doctor_profile'):
-                    return redirect('accounts:doctor_dashboard')  
-                elif hasattr(user, 'patient_profile'):
-                    return redirect('accounts:patient_dashboard')  
-                else:
-                    return redirect('base:home')  
-    else:
-        form = LoginForm()
-    
-    return render(request, 'accounts/login.html', {'form': form})\
-        
-
-@login_required
-def user_profile(request):
-    user = request.user
-    profile = None
-
-    if user.groups.filter(name='Doctors').exists():
-        profile = get_object_or_404(DoctorProfile, user=user)
-        print(profile)
-    elif user.groups.filter(name='Patients').exists():
-        profile = get_object_or_404(PatientProfile, user=user)
-    
-    return render(request, 'accounts/profile.html', {'profile': profile})
-
-
-@login_required
-def logout(request):
-    auth_logout(request)
-    return redirect('accounts:login') 
-
-
-@login_required
-def doctor_dashboard(request):
-    return render(request, 'accounts/doctor_dashboard.html')
-
-@login_required
-def patient_dashboard(request):
-    return render(request, 'accounts/patient_dashboard.html')
-
-
-
+    def get_object(self):
+        return get_object_or_404(PatientProfile, user=self.request.user)

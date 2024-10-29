@@ -15,6 +15,9 @@ The `__str__` method provides a string representation of the appointment, showin
 """
 from accounts.models import DoctorProfile, PatientProfile
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Appointment(models.Model):
     STATUS_CHOICES = [

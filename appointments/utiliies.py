@@ -1,5 +1,6 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from accounts.models import DoctorProfile
+from accounts.models import User
 
 # Ensure the 'Doctors' group exists
 doctors_group, created = Group.objects.get_or_create(name='Doctors')

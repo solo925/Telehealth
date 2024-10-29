@@ -10,7 +10,7 @@ from . forms import PaymentForm
 from .mpesa_utils import standardize_phone_number
 from .mpesa_utils import is_valid_phone_number
 from payments.models import Invoice
-
+from django.conf import settings
 
 
 # PAYPAL VIEWS

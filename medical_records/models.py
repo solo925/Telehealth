@@ -12,7 +12,9 @@ The `MedicalRecord` model has the following fields:
 The `__str__` method returns a string representation of the medical record, showing the title and the patient's username.
 """
 from django.db import models
-from django.contrib.auth.models import User
+from accounts.models import User
+from django.contrib.auth import get_user_model
+
 
 class MedicalRecord(models.Model):
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records')

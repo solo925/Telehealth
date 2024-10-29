@@ -1,7 +1,7 @@
-<!-- templates/appointments/appointment_detail.html -->
 {% extends "base/base.html" %} {% block content %}
 <h2>Appointment Details</h2>
 <p>Doctor: {{ appointment.doctor.user.username }}</p>
 <p>Date: {{ appointment.appointment_date }}</p>
 <p>Status: {{ appointment.get_status_display }}</p>
 {% endblock %}
+<button type="button">cancell this appointment</button>

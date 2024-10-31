@@ -1,6 +1,9 @@
-<a href="{% url 'base:home' %}">home</a>
-
-<h1>welcome to the doctor,{request.user.username}</h1>
-<h2>My profile</h2>
-<h2>My appintments</h2>
-<h2>My Patients</h2>
+<a href="{% url 'base:home' %}">Home</a>
+<h1>Welcome, Dr. {{ request.user.username }}</h1>
+<h2><a href="{% url 'doctor_profile' %}">My Profile</a></h2>
+<h2><a href="{% url 'appointments' %}">My Appointments</a></h2>
+<h2><a href="{% url 'patient_list' %}">My Patients</a></h2>
+<h2>
+  <a href="{% url 'notifications' %}">Upcoming Appointment Notifications</a>
+</h2>
+<h2><a href="{% url 'pharmacy_access' %}">Access Pharmacy</a></h2>

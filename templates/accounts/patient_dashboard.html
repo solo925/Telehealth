@@ -1,12 +1,7 @@
-<a href="{% url 'base:home' %}">home</a>
-
-<h1>welcome {request.user.username}</h1>
-<h2>Patients Profile</h2>
-<h2>upcoming appointments</h2>
-<h2>my doctors</h2>
-<h2>h</h2>
-
-<h2>
-  Hillness history
-  <h2></h2>
-</h2>
+<a href="{% url 'base:home' %}">Home</a>
+<h1>Welcome, {{ request.user.username }}</h1>
+<h2><a href="{% url 'patient_profile' %}">My Profile</a></h2>
+<h2><a href="{% url 'appointments' %}">Upcoming Appointments</a></h2>
+<h2><a href="{% url 'doctor_list' %}">My Doctors</a></h2>
+<h2><a href="{% url 'notifications' %}">Medication Notifications</a></h2>
+<h2><a href="{% url 'medical_history' %}">Medical History</a></h2>

@@ -61,7 +61,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "channels",
     "rest_framework",
-]
+    "tailwind",
+    "theme",
+   
+
+] 
+
+
+TAILWIND_APP_NAME = 'theme'
+
+
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
